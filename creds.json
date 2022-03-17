@@ -1,0 +1,9 @@
+{
+  "pushover": {
+    "user_key": "insert_user_key",
+    "api_token": "insert_api_token"
+  },
+  "slack": {
+    "webhook_url": "https://hooks.slack.com/services/put_your/url/here"
+  }
+}
