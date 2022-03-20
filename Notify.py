@@ -55,7 +55,7 @@ def send_pushover(creds, message):
     return response
 
 
-def send_slack(message):
+def send_slack(creds, message):
     response = requests.post(
         creds["slack"]["webhook_url"],
         json={"text": message},
