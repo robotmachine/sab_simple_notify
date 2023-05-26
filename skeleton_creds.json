@@ -5,5 +5,8 @@
   },
   "slack": {
     "webhook_url": "https://hooks.slack.com/services/123/456/789"
+  },
+  "discord": {
+    "webhook_url": "https://discord.com/api/webhooks/xyz"
   }
 }

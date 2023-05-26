@@ -47,14 +47,15 @@ def main():
     # Sends messages
     responses = {
         "pushover": send_pushover(creds, message),
-        "slack": send_slack(creds, message),
+        #"slack": send_webhook("slack", creds, message),
+        "discord": send_webhook("discord", creds, message),
     }
     handle_errors(creds, responses, logger)  # checks responses for errors and logs them to log file
     quit()
 
 
 def get_creds():
-    cred_file = "creds.json"
+    cred_file = f"{os.path.dirname(__file__)}/creds.json"
     if os.path.isfile(cred_file):
         creds = json.load(open(cred_file))
     else:
@@ -75,9 +76,9 @@ def send_pushover(creds, message):
     return response
 
 
-def send_slack(creds, message):
+def send_webhook(service, creds, message):
     response = requests.post(
-        creds["slack"]["webhook_url"],
+        creds[service]["webhook_url"],
         json={"text": message},
         headers={"Content-Type": "application/json"},
     )
