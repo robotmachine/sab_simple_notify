@@ -47,7 +47,7 @@ def main():
     # Sends messages
     responses = {
         "pushover": send_pushover(creds, message),
-        #"slack": send_webhook("slack", creds, message),
+        #"slack": send_webhook("slack", creds, message), ## uncomment to send Slack message
         "discord": send_webhook("discord", creds, message),
     }
     handle_errors(creds, responses, logger)  # checks responses for errors and logs them to log file
@@ -77,9 +77,15 @@ def send_pushover(creds, message):
 
 
 def send_webhook(service, creds, message):
+    if service.lower() == 'slack':
+        payload = {'text': message}
+    elif service.lower() == 'discord':
+        payload = {'content': message}
+    else:
+        quit(f'{service} not supported'
     response = requests.post(
         creds[service]["webhook_url"],
-        json={"text": message},
+        json=payload,
         headers={"Content-Type": "application/json"},
     )
     return response
