@@ -59,6 +59,7 @@ def get_creds():
     if os.path.isfile(cred_file):
         creds = json.load(open(cred_file))
     else:
+        creds = None
         quit(f"Cannot find {cred_file}")
     return creds
 
@@ -82,7 +83,8 @@ def send_webhook(service, creds, message):
     elif service.lower() == 'discord':
         payload = {'content': message}
     else:
-        quit(f'{service} not supported'
+        payload = None
+        quit(f'{service} not supported')
     response = requests.post(
         creds[service]["webhook_url"],
         json=payload,
