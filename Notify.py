@@ -3,6 +3,7 @@ import sys
 import json
 import os
 import logging
+from pathlib import Path
 
 
 def notify(message_title, message_text):
@@ -59,7 +60,7 @@ def notify(message_title, message_text):
 def get_creds():
     """Gets credentials from `creds.json` file in the same dir as this script"""
     cred_file = f"{os.path.dirname(__file__)}/creds.json"
-    if os.path.isfile(cred_file):
+    if Path.exists(Path(cred_file)):
         creds = json.load(open(cred_file))
     else:
         creds = None
@@ -99,8 +100,11 @@ def send_webhook(service, creds, message):
 
 def create_logger():
     """Create a formatted logger"""
+    log_file = f"{os.path.dirname(__file__)}/Notify.log"
+    if not Path.exists(Path(log_file)):
+        Path(log_file).touch()
     formatter = "%(asctime)s [%(levelname)s] %(message)s"
-    logging.basicConfig(filename="Notify.log", filemode="a", level=logging.DEBUG, format=formatter)
+    logging.basicConfig(filename=log_file, filemode="a", level=logging.DEBUG, format=formatter)
     return logging.getLogger()
 
 
