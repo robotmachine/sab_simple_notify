@@ -31,8 +31,17 @@ def notify(message_title, message_text):
     }
 
     # Handle ignoring of unwanted messages
-    if len([ignore for ignore in ignore_strings if ignore.lower() in message_text.lower()]) > 0:
-        quit('Message was ignored')
+    if (
+        len(
+            [
+                ignore
+                for ignore in ignore_strings
+                if ignore.lower() in message_text.lower()
+            ]
+        )
+        > 0
+    ):
+        quit("Message was ignored")
 
     # Message style will be "Title .:. Text of Message"
     # If there isn't a nicer looking version of the title, then the user input is used instead
@@ -84,13 +93,13 @@ def send_pushover(creds, message):
 
 def send_webhook(service, creds, message):
     """Send webhook request"""
-    if service.lower() == 'slack':
-        payload = {'text': message}
-    elif service.lower() == 'discord':
-        payload = {'content': message}
+    if service.lower() == "slack":
+        payload = {"text": message}
+    elif service.lower() == "discord":
+        payload = {"content": message}
     else:
         payload = None
-        quit(f'{service} not supported')
+        quit(f"{service} not supported")
     return requests.post(
         creds[service]["webhook_url"],
         json=payload,
@@ -104,7 +113,9 @@ def create_logger():
     if not Path.exists(Path(log_file)):
         Path(log_file).touch()
     formatter = "%(asctime)s [%(levelname)s] %(message)s"
-    logging.basicConfig(filename=log_file, filemode="a", level=logging.DEBUG, format=formatter)
+    logging.basicConfig(
+        filename=log_file, filemode="a", level=logging.DEBUG, format=formatter
+    )
     return logging.getLogger()
 
 
