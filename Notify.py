@@ -9,7 +9,7 @@ from pathlib import Path
 def notify(message_title, message_text):
     """Simple notification tool for SabNZBd+"""
     # Strings to be ignored
-    ignore_strings = ("signal 15", "cannot read watched")
+    ignore_strings = ("signal 15", "cannot read watched", "message was ignored")
 
     creds = get_creds()
 
