@@ -6,17 +6,17 @@ import logging
 from pathlib import Path
 
 
-def notify(message_title, message_text):
+def notify(message_title: str, message_text: str) -> None:
     """Simple notification tool for SabNZBd+"""
     # Strings to be ignored
-    ignore_strings = ("signal 15", "cannot read watched", "message was ignored")
+    ignore_strings: tuple = ("signal 15", "cannot read watched", "message was ignored")
 
-    creds = get_creds()
+    creds: dict = get_creds()
 
-    logger = create_logger()
+    logger: logging = create_logger()
 
     # Provides nicer looking titles for messages
-    message_types = {
+    message_types: dict = {
         "startup": "Startup/Shutdown",
         "download": "Added NZB",
         "pp": "Post-processing started",
@@ -46,12 +46,12 @@ def notify(message_title, message_text):
     # Message style will be "Title .:. Text of Message"
     # If there isn't a nicer looking version of the title, then the user input is used instead
     try:
-        message_to_send = f"{message_types[message_title]} .:. {message_text}"
+        message_to_send: str = f"{message_types[message_title]} .:. {message_text}"
     except IndexError:
-        message_to_send = f"{message_title} .:. {message_text}"
+        message_to_send: str = f"{message_title} .:. {message_text}"
 
     # Sends messages
-    responses = {
+    responses: dict = {
         "pushover": send_pushover(creds, message_to_send),
         # "slack": send_webhook("slack", creds, message),
         "discord": send_webhook("discord", creds, message_to_send),
@@ -66,24 +66,23 @@ def notify(message_title, message_text):
     quit()
 
 
-def get_creds():
+def get_creds() -> dict:
     """Gets credentials from `creds.json` file in the same dir as this script"""
     cred_file = f"{os.path.dirname(__file__)}/creds.json"
     if Path.exists(Path(cred_file)):
         creds = json.load(open(cred_file))
     else:
-        creds = None
         quit(f"Cannot find {cred_file}")
     return creds
 
 
-def send_pushover(creds, message):
+def send_pushover(creds: dict, message: str) -> requests:
     """Send message formatted for Pushover API"""
-    base_url = "api.pushover.net"
-    url_endpoint = "1/messages.json"
-    url = f"https://{base_url}/{url_endpoint}"
+    base_url: str = "api.pushover.net"
+    url_endpoint: str = "1/messages.json"
+    url: str = f"https://{base_url}/{url_endpoint}"
 
-    querystring = {
+    querystring: dict = {
         "token": creds["pushover"]["api_token"],
         "user": creds["pushover"]["user_key"],
         "message": message,
@@ -91,14 +90,13 @@ def send_pushover(creds, message):
     return requests.request("POST", url, data="", params=querystring)
 
 
-def send_webhook(service, creds, message):
+def send_webhook(service: str, creds: dict, message: str) -> requests:
     """Send webhook request"""
     if service.lower() == "slack":
         payload = {"text": message}
     elif service.lower() == "discord":
         payload = {"content": message}
     else:
-        payload = None
         quit(f"{service} not supported")
     return requests.post(
         creds[service]["webhook_url"],
@@ -107,7 +105,7 @@ def send_webhook(service, creds, message):
     )
 
 
-def create_logger():
+def create_logger() -> logging:
     """Create a formatted logger"""
     log_file = f"{os.path.dirname(__file__)}/Notify.log"
     if not Path.exists(Path(log_file)):
